@@ -1,0 +1,42 @@
+*, *:before, *:after {
+    -webkit-box-sizing: inherit;
+            box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+}
+html {
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+}
+
+.chat-app-header {
+    display: flex;
+    align-items: center;
+    background-color: rgb(43, 182, 140);
+    height: 5rem;
+}
+
+.chat-app-header h1 {
+    margin-left: 2rem;
+    color: white;
+}
+
+.chat-container {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    height: 70vh;
+}
+
+.room {
+    height: 70px;
+    display: flex;
+    align-items: center;
+}
+
+.room * {
+    margin-left: 3rem;
+}
+
+.room:hover {
+    background-color: rgb(197, 193, 193);
+}
