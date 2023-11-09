@@ -20,8 +20,6 @@ const LoginPage = () => {
           const result = await loginUser(formData);
           const token = result?.data;
           
-          // Poiché la registrazione richiede l'email, ottieni il nome utente in un secondo momento per passarlo come stato alla pagina principale,
-          // in modo che il nome utente non venga richiesto per il login ma solo l'email.
           username = (await getUsername(token, formData.email))?.data
           
           // Reindirizza alla pagina principale se il client ha ricevuto un token.

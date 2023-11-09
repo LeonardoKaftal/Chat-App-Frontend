@@ -1,8 +1,8 @@
-export function connectToRoom(roomName? : string) : WebSocket {
+export function connectToRoom(username :string, roomName? : string) : WebSocket {
     if (typeof roomName !== 'undefined') {
-        return new WebSocket(`ws://localhost:8090/ws/${roomName}`)
+        return new WebSocket(`ws://localhost:8090/ws/${username}/${roomName}`)
     }
     else {
-        return new WebSocket("ws://localhost:8090/ws")
+        return new WebSocket(`ws://localhost:8090/ws/${username}`)
     }
 }

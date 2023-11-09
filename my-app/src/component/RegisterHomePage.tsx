@@ -17,6 +17,7 @@ const RegisterHomePage = () => {
       const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         try {
+          
           const result = await registerUser(formData);
           token = result?.data;
           if (token != null) {

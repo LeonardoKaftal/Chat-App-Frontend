@@ -37,6 +37,6 @@ html {
     margin-left: 3rem;
 }
 
-.room:hover {
+.room:hover, .selected {
     background-color: rgb(197, 193, 193);
 }
