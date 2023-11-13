@@ -27,6 +27,15 @@ html {
     height: 70vh;
 }
 
+.chat-container {
+    height: 91.5vh
+}
+
+.room-container {
+    border-right: solid;
+}
+
+
 .room {
     height: 70px;
     display: flex;
@@ -40,3 +49,70 @@ html {
 .room:hover, .selected {
     background-color: rgb(197, 193, 193);
 }
+
+
+.messages-container {
+    height: 90%;
+}
+
+.user-input-container {
+    display: flex;
+    align-items: center;
+    height: 10%;
+  }
+  
+  
+  .message-input-bar {
+    text-indent: 15px;
+    border-radius: 20px;
+    border: none;
+    background-color: rgb(217, 222, 226);
+    height: 50px;
+    width: 90%;
+    margin-left: 20px;
+  }
+  
+  .input-button {
+    border: 0;
+    margin-left: 20px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    height: 100%;
+    background: transparent;
+    outline: none;
+    font-size: 40px;
+    color: rgb(102, 194, 166);
+  }
+
+  .messages-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .message-container {
+    display: grid;
+    width: 100%;
+  }
+
+  .message {
+    width: 120px;
+    height: 100px;
+    display: grid;
+    background-color: green;
+    grid-template-rows: 30% 70%;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .your-message {
+    background-color: green;
+  }
+
+  .others-message {
+    display: grid;
+    background-color: #0754e4;
+    justify-self: flex-end;
+  }
+
+  

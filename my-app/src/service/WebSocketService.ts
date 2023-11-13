@@ -6,3 +6,9 @@ export function connectToRoom(username :string, roomName? : string) : WebSocket 
         return new WebSocket(`ws://localhost:8090/ws/${username}`)
     }
 }
+
+export function sendMessage(connection : WebSocket | undefined, message : string) {
+    if (connection) {
+        connection.send(message);
+    }
+}

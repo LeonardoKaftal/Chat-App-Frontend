@@ -19,16 +19,17 @@ const Room: React.FC<Props> = ({ username, roomName, connection, setCurrentConne
       connection.close();
     }
 
-    const newRoomName = `${username}-${roomName}`;
-    const newConnection = connectToRoom(username, newRoomName);
-
-    setCurrentConnection(newConnection);
-    setCurrentRoom(roomName)    
+    const newRoomName = username < roomName ? username + "-" + roomName : roomName + "-" + username;
+    if (roomName === "Global") {
+      setCurrentConnection(connectToRoom(username));
+    }
+    else {
+      const newConnection = connectToRoom(username, newRoomName);
+      setCurrentConnection(newConnection);
+    }
+    setCurrentRoom(roomName);    
 
   };
-
-
-
 
   return (
     <div className={roomClassName} onClick={handleRoomClick}>

@@ -2,18 +2,27 @@ import { ReactNode, useEffect, useState } from "react";
 import Room from "./Room";
 import { redirect, useLocation, useNavigate } from "react-router-dom";
 import { authenticateUser, loginUser } from "../service/AuthService";
-import { connectToRoom } from "../service/WebSocketService";
+import { connectToRoom, sendMessage } from "../service/WebSocketService";
+import Message from "./Message";
 
+
+interface Message {
+  Payload: string
+	DestinationRoom: string
+	SenderName : string
+}
 
 const ChatAppHomePage: React.FC = () => {
   const location = useLocation();
   const token = location.state?.token;
   const username = location.state?.username;
   const navigate = useNavigate();
-  let [connection, setCurrentConnection] = useState<WebSocket>() 
+  let [connection, setCurrentConnection] = useState<WebSocket>(); 
   const [connectedUsers, setConnectedUsers] = useState<string[]>([]);
-  const [rooms,setRooms] = useState<ReactNode[]>([])
+  const [rooms,setRooms] = useState<ReactNode[]>([]);
   const [currentRoom, setCurrentRoom] = useState("Global");
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [currentMessage, setCurrentMessage] = useState("");
 
   useEffect(() => {
     authenticateUser(token).catch(()=> navigate("/register"));
@@ -24,20 +33,23 @@ const ChatAppHomePage: React.FC = () => {
 
   useEffect(()=> {
     if (connection) {
+      setMessages([])
       connection.addEventListener("message",  e  => {
-      const message = JSON.parse(e.data)
-      if (typeof message !== "string") {
-          setConnectedUsers(message)
+      const message = JSON.parse(e.data);
+      if (message.SenderName === undefined) {
+          setConnectedUsers(message);
+      }
+      else {
+        // @ts-ignore
+        setMessages(messages => [...messages, message] )
       }
       return
     })
     }
-    
-
-  }, [connection])
+  }, [connection]);
 
   useEffect(() => {
-    if (connection) {
+    if (connection && connectedUsers.length !== undefined) {
       const roomElements = connectedUsers.map(currentUsername => (
       <div key={username}>
         {username !== currentUsername && currentRoom !== currentUsername &&
@@ -74,14 +86,53 @@ const ChatAppHomePage: React.FC = () => {
           }
           {rooms}
         </div>
-        <div className="message-container"></div>
+        <div className="interaction-container">
+          <div className="messages-container">
+            {messages.map(message => <Message sender={message.SenderName} content={message.Payload} username={username}/>)}
+          </div>
+          <div className="user-input-container">
+            <input className='message-input-bar' type="text" placeholder="Write your message" value={currentMessage}
+              onChange={(event) => {
+                setCurrentMessage(event.target.value);
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  const message: Message = {
+                    Payload: currentMessage,
+                    // @ts-ignore
+                    DestinationRoom: undefined,
+                    SenderName: username
+                  }
+                  // @ts-ignore
+                  setMessages(messages => [...messages, message] )
+                  sendMessage(connection, currentMessage);
+                  setCurrentMessage('');
+                }
+              }}
+            />
+            <button
+              className='input-button'
+              onClick={() => {
+                const message: Message = {
+                  Payload: currentMessage,
+                  // @ts-ignore
+                  DestinationRoom: undefined,
+                  SenderName: username
+                }
+                sendMessage(connection, currentMessage);
+                setMessages(messages => [...messages, message]);
+                setCurrentMessage('');
+              }}>&#9658;
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
   }
   else {
     return (
-      <div></div>
+      <div><h1>Impossible to connect to the server</h1></div>
     )
   }
   
