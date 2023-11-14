@@ -10,8 +10,8 @@ const Message: React.FC<MessageProps> = ({sender, content, username}) => {
     return (
         <div className="message-container">
             <div className={"message " + messageClassName}>
-                <div className="message-sender"><h1 style={{color: "white"}}>{sender}</h1></div>
-                <div className="message-content"><p style={{color: "white"}}>{content}</p></div>
+                <div className="message-sender"><h3 style={{color: "white"}}>{sender}</h3></div>
+                <div className="message-content"><p style={{color: "white", marginTop: "5px", fontSize: "20px"}}>{content}</p></div>
             </div>
         </div>
     )
