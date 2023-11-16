@@ -1,9 +1,10 @@
 import { ReactNode, useEffect, useState } from "react";
 import Room from "./Room";
-import { redirect, useLocation, useNavigate } from "react-router-dom";
-import { authenticateUser, loginUser } from "../service/AuthService";
+import { useLocation, useNavigate } from "react-router-dom";
+import { authenticateUser } from "../service/AuthService";
 import { connectToRoom, sendMessage } from "../service/WebSocketService";
 import Message from "./Message";
+import { getAllMessagesFromARoom, saveMessage } from "../service/MessageService";
 
 
 interface Message {
@@ -11,6 +12,8 @@ interface Message {
 	DestinationRoom: string
 	SenderName : string
 }
+
+
 
 const ChatAppHomePage: React.FC = () => {
   const location = useLocation();
@@ -24,23 +27,42 @@ const ChatAppHomePage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentMessage, setCurrentMessage] = useState("");
 
+
+  // this function check if the user has selected a certain the room, the logic of the selection is done in the Room component, here it check the value of currentRoom 
+  // and then return if the room that is being rendered if selected by the user or not 
+  const isSelected = (usernameToCheck: string) => {
+    // the current room is your username + the username of the selected user separated by - (the order could change because the separation by - is sorted by alphabetical order)
+    // so i get the username of the other user and check if is the value pased to the function, this means that the user clicked the div of the room of that username
+    const othersUsername: string = currentRoom.split("-").filter(usernamePart => username !== usernamePart)[0];
+    if (othersUsername === usernameToCheck) return true;
+    return false;
+  };
+
   useEffect(() => {
     authenticateUser(token).catch(()=> navigate("/register"));
     if (username !== undefined) {
-      setCurrentConnection(connectToRoom(username));
+      setCurrentConnection(connectToRoom(username,currentRoom));
+      
+      getAllMessagesFromARoom(token,currentRoom).then((messages: Message[]) => {
+        if (messages.length > 0) {
+          setMessages(messages)
+        }
+      })
     }
   }, []);
 
-  useEffect(()=> {
+  useEffect(()=> {  
     if (connection) {
-      setMessages([])
+      getAllMessagesFromARoom(token,currentRoom).then((messages: Message[]) => {
+          setMessages(messages)
+      });
+      
       connection.addEventListener("message",  e  => {
       const message = JSON.parse(e.data);
       if (message.SenderName === undefined) {
           setConnectedUsers(message);
       }
       else {
-        // @ts-ignore
         setMessages(messages => [...messages, message] )
       }
       return
@@ -52,11 +74,11 @@ const ChatAppHomePage: React.FC = () => {
     if (connection && connectedUsers.length !== undefined) {
       const roomElements = connectedUsers.map(currentUsername => (
       <div key={username}>
-        {username !== currentUsername && currentRoom !== currentUsername &&
-        <Room username={username} roomName={currentUsername} connection={connection} setCurrentConnection={setCurrentConnection} setCurrentRoom={setCurrentRoom} isSelected={false} />
+        {username !== currentUsername && !isSelected(currentUsername) &&
+          <Room username={username} roomName={currentUsername} connection={connection} setCurrentConnection={setCurrentConnection} setCurrentRoom={setCurrentRoom} isSelected={false} />
         } 
         {
-          username !== currentUsername && currentRoom === currentUsername &&
+          username !== currentUsername && isSelected(currentUsername) &&
           <Room username={username} roomName={currentUsername} connection={connection} setCurrentConnection={setCurrentConnection} setCurrentRoom={setCurrentRoom} isSelected={true} />
         }
       </div>
@@ -99,13 +121,12 @@ const ChatAppHomePage: React.FC = () => {
                 if (event.key === "Enter") {
                   const message: Message = {
                     Payload: currentMessage,
-                    // @ts-ignore
-                    DestinationRoom: undefined,
+                    DestinationRoom: currentRoom,
                     SenderName: username
                   }
-                  // @ts-ignore
                   setMessages(messages => [...messages, message] )
                   sendMessage(connection, currentMessage);
+                  saveMessage(token,message);
                   setCurrentMessage('');
                 }
               }}
@@ -115,12 +136,12 @@ const ChatAppHomePage: React.FC = () => {
               onClick={() => {
                 const message: Message = {
                   Payload: currentMessage,
-                  // @ts-ignore
-                  DestinationRoom: undefined,
+                  DestinationRoom: currentRoom,
                   SenderName: username
                 }
                 sendMessage(connection, currentMessage);
                 setMessages(messages => [...messages, message]);
+                saveMessage(token,message);
                 setCurrentMessage('');
               }}>&#9658;
             </button>
@@ -135,7 +156,6 @@ const ChatAppHomePage: React.FC = () => {
       <div><h1>Impossible to connect to the server</h1></div>
     )
   }
-  
 }
  
 

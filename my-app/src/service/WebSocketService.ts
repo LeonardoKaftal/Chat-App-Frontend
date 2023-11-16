@@ -1,5 +1,5 @@
-export function connectToRoom(username :string, roomName? : string) : WebSocket {
-    if (typeof roomName !== 'undefined') {
+export function connectToRoom(username :string, roomName : string) : WebSocket {
+    if (roomName !== 'Global') {
         return new WebSocket(`ws://localhost:8090/ws/${username}/${roomName}`)
     }
     else {

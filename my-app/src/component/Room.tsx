@@ -15,20 +15,18 @@ const Room: React.FC<Props> = ({ username, roomName, connection, setCurrentConne
   const roomClassName = isSelected ? "room selected" : "room";
 
   const handleRoomClick = () => {
-    if (connection) {
-      connection.close();
-    }
-
-    const newRoomName = username < roomName ? username + "-" + roomName : roomName + "-" + username;
-    if (roomName === "Global") {
-      setCurrentConnection(connectToRoom(username));
+    let newRoomName;
+    if (connection) connection.close();
+    
+    if (roomName !== "Global") {
+      newRoomName = username < roomName ? username + "-" + roomName : roomName + "-" + username;
+      setCurrentConnection(connectToRoom(username,newRoomName));
     }
     else {
-      const newConnection = connectToRoom(username, newRoomName);
-      setCurrentConnection(newConnection);
+      newRoomName = roomName;
+      setCurrentConnection(connectToRoom(username,newRoomName));
     }
-    setCurrentRoom(roomName);    
-
+    setCurrentRoom(newRoomName);
   };
 
   return (
