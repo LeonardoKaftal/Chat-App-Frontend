@@ -11,14 +11,18 @@ interface LoginFormData {
     password: string
 }
 
-export const registerUser = async (formData : RegisterFormData): Promise<AxiosResponse | undefined> => {
-    try {
-        return await axios.post("http://localhost:8080/api/v1/auth/register", formData);
-    } 
-    catch (error) {
-        throw console.error("Error attempting to register the user " + error);
-    }
-}
+export const registerUser = async (formData: RegisterFormData): Promise<AxiosResponse | undefined> => {
+  try {
+      const response = await axios.post("http://localhost:8080/api/v1/auth/register", formData);
+      return response;
+  } catch (error: any) {
+      if (error.response && error.response.data && error.response.data.message) {
+          throw "Error attempting to register the user: " + error.response.data.message;
+      } else {
+          throw "Error attempting to register the user: " + error.message;
+      }
+  }
+};
 
 export const authenticateUser = async (token: string): Promise<AxiosResponse | undefined> => {
   try {
@@ -36,10 +40,14 @@ export const authenticateUser = async (token: string): Promise<AxiosResponse | u
 
 export const loginUser = async (formData: LoginFormData): Promise<AxiosResponse | undefined> => {
   try {
-    return await axios.post("http://localhost:8080/api/v1/auth/login", formData);
-  } 
-  catch (error) {
-    throw console.error("Error attempting to login the user " + error);
+      const response = await axios.post("http://localhost:8080/api/v1/auth/login", formData);
+      return response;
+  } catch (error: any) {
+      if (error.response && error.response.data && error.response.data.message) {
+          throw "Error attempting to login the user: " + error.response.data.message;
+      } else {
+          throw "Error attempting to login the user: " + error.message;
+      }
   }
 };
 

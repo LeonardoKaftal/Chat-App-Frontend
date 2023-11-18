@@ -5,6 +5,8 @@ import { authenticateUser } from "../service/AuthService";
 import { connectToRoom, sendMessage } from "../service/WebSocketService";
 import Message from "./Message";
 import { getAllMessagesFromARoom, saveMessage } from "../service/MessageService";
+// @ts-ignore
+import ScrollToBottom from 'react-scroll-to-bottom';
 
 
 interface Message {
@@ -109,9 +111,10 @@ const ChatAppHomePage: React.FC = () => {
           {rooms}
         </div>
         <div className="interaction-container">
-          <div className="messages-container">
-            {messages.map(message => <Message sender={message.SenderName} content={message.Payload} username={username}/>)}
+            <div className="messages-container">
+                {messages.map(message => <Message sender={message.SenderName} content={message.Payload} username={username}/>)}
           </div>
+          
           <div className="user-input-container">
             <input className='message-input-bar' type="text" placeholder="Write your message" value={currentMessage}
               onChange={(event) => {
@@ -153,7 +156,7 @@ const ChatAppHomePage: React.FC = () => {
   }
   else {
     return (
-      <div><h1>Impossible to connect to the server</h1></div>
+        <h1>Impossible to connect to the server</h1>
     )
   }
 }

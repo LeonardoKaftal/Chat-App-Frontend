@@ -9,6 +9,7 @@ const RegisterHomePage = () => {
         email: "",
         password: "",
       });
+      const [registrationError, setRegistrationError] = useState<string | undefined>(undefined)
     
       let token: string | null = null;
       const navigate = useNavigate();
@@ -24,7 +25,8 @@ const RegisterHomePage = () => {
             navigate("/", { state: { token: token, username: formData.username } });
           }
         } catch (error) {
-          console.error("Error handling form submission:", error);
+          // @ts-ignore
+          setRegistrationError(error)
         }
       };
     
@@ -126,6 +128,13 @@ const RegisterHomePage = () => {
               </div>
             </div>
           </div>
+
+          { registrationError && 
+            <div className="form-error">
+              <h3>{registrationError}</h3>
+            </div>
+          }
+
         </div>
       );
     };

@@ -11,7 +11,7 @@ const LoginPage = () => {
       let token: string | null = null;
       let username = null;
       const navigate = useNavigate();
-    
+      const [loginError, setLoginError] = useState<string | undefined>(undefined)
     
     
       const handleSubmit = async (event: React.FormEvent) => {
@@ -24,8 +24,8 @@ const LoginPage = () => {
           
           // Reindirizza alla pagina principale se il client ha ricevuto un token.
           if (token != null) navigate("/", { state: { token: token, username: username }});
-        } catch (error) {
-          console.error(error);
+        } catch (error:any) {
+          setLoginError(error);
         }
       }
       
@@ -108,6 +108,12 @@ const LoginPage = () => {
               </div>
             </div>
           </div>
+
+          { loginError && 
+            <div className="form-error">
+              <h3>{loginError}, you probably inserted an invalid username and password</h3>
+            </div>
+          }   
         </div>
       )
 }
