@@ -14,8 +14,7 @@ export const saveMessage = async (token: string, message: Message) => {
       },
     };
 
-
-    return await axios.post(`http://localhost:8080/api/v1/messages`, message, config);
+    return await axios.post(`https://chat-app-spring-boot-backend.onrender.com/api/v1/messages`, message, config);
 };
 
 export const getAllMessagesFromARoom = async (token: string, roomName: string) => {
@@ -28,7 +27,7 @@ export const getAllMessagesFromARoom = async (token: string, roomName: string) =
             },
         };
 
-        const response = await axios.get(`http://localhost:8080/api/v1/messages/${roomName}`, config);
+        const response = await axios.get(`https://chat-app-spring-boot-backend.onrender.com/api/v1/messages/${roomName}`, config);
 
         if (response.status === 200) {
             console.log(response.data)
