@@ -1,9 +1,9 @@
 export function connectToRoom(username :string, roomName : string) : WebSocket {
     if (roomName !== 'Global') {
-        return new WebSocket(`ws://localhost:8090/ws/${username}/${roomName}`)
+        return new WebSocket(`wss://websocket-chat-server-3a8b.onrender.com/ws/${username}/${roomName}`)
     }
     else {
-        return new WebSocket(`ws://localhost:8090/ws/${username}`)
+        return new WebSocket(`wss://websocket-chat-server-3a8b.onrender.com/ws/${username}`)
     }
 }
 
