@@ -92,7 +92,6 @@ const ChatAppHomePage: React.FC = () => {
 
 
 
-  if (connection) {
     return (
     <div className="App">
       <header className="chat-app-header">
@@ -153,12 +152,6 @@ const ChatAppHomePage: React.FC = () => {
       </div>
     </div>
   );
-  }
-  else {
-    return (
-        <h1>Impossible to connect to the server</h1>
-    )
-  }
 }
  
 
