@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { authenticateUser } from "../service/AuthService";
 import { connectToRoom, sendMessage } from "../service/WebSocketService";
 import Message from "./Message";
-import { getAllMessagesFromARoom } from "../service/MessageService";
+import { getAllMessagesFromARoom, saveMessage } from "../service/MessageService";
 // @ts-ignore
 import ScrollToBottom from 'react-scroll-to-bottom';
 
@@ -41,7 +41,7 @@ const ChatAppHomePage: React.FC = () => {
     return false;
   };
 
-  /*useEffect(() => {
+  useEffect(() => {
     setIsAuthenticating(true);
     authenticateUser(token).catch(()=> navigate("/register")).then(()=> setIsAuthenticating(false));
     if (username !== undefined) {
@@ -89,7 +89,7 @@ const ChatAppHomePage: React.FC = () => {
     setRooms(roomElements);
     }
   
-  }, [connectedUsers]);*/
+  }, [connectedUsers]);
 
 
 
@@ -132,8 +132,8 @@ const ChatAppHomePage: React.FC = () => {
                     SenderName: username
                   }
                   setMessages(messages => [...messages, message] )
-                  //sendMessage(connection, currentMessage);
-                  //saveMessage(token,message);
+                  sendMessage(connection, currentMessage);
+                  saveMessage(token,message);
                   setCurrentMessage('');
                 }
               }}
@@ -148,7 +148,7 @@ const ChatAppHomePage: React.FC = () => {
                 }
                 sendMessage(connection, currentMessage);
                 setMessages(messages => [...messages, message]);
-                //saveMessage(token,message);
+                saveMessage(token,message);
                 setCurrentMessage('');
               }}>&#9658;
             </button>
