@@ -3,11 +3,17 @@
             box-sizing: inherit;
     margin: 0;
     padding: 0;
+    max-height: 90vh;
 }
 html {
     -webkit-box-sizing: border-box;
             box-sizing: border-box;
 }
+
+body, html, .App {
+  height: 90vh;
+}
+
 
 .chat-app-header {
     display: flex;
@@ -22,17 +28,22 @@ html {
 }
 
 .chat-container {
+  height: 80vh;
     display: grid;
     grid-template-columns: 30% 70%;
-    height: 70vh;
 }
 
-.chat-container {
-    height: 91.5vh
+.chat-container, .interaction-container {
+    max-height: 100%;
+    height: inherit;
 }
+
+
 
 .room-container {
+    height: inherit;
     border-right: solid;
+    height: 100%;
 }
 
 
@@ -52,24 +63,25 @@ html {
 
 
 .messages-container {
-    height: 90%;
+    height: 88%;
 }
 
 .user-input-container {
-  position: fixed;
-  bottom: 0;
-  width: 65%;
+  width: 75%;
   display: flex;
   align-items: center;
-  height: 10%;
+  height: 13%;
   padding: 10px;
   background-color: white;
   z-index: 1; 
 }
 
-  .interaction-container  {
-    height: fit-content;
-  }
+
+
+.interaction-container {
+  position: relative; /* Assicura che l'input si posizioni relativamente a questo contenitore */
+}
+
   
   .message-input-bar {
     text-indent: 15px;
@@ -98,6 +110,7 @@ html {
     display: flex;
     flex-direction: column;
   }
+
   
   .message-container {
     display: grid;

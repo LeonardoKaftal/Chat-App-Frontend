@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { authenticateUser } from "../service/AuthService";
 import { connectToRoom, sendMessage } from "../service/WebSocketService";
 import Message from "./Message";
-import { getAllMessagesFromARoom, saveMessage } from "../service/MessageService";
+import { getAllMessagesFromARoom } from "../service/MessageService";
 // @ts-ignore
 import ScrollToBottom from 'react-scroll-to-bottom';
 
@@ -28,6 +28,7 @@ const ChatAppHomePage: React.FC = () => {
   const [currentRoom, setCurrentRoom] = useState("Global");
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentMessage, setCurrentMessage] = useState("");
+  const [isAuthenticating, setIsAuthenticating] = useState(false)
 
 
   // this function check if the user has selected a certain the room, the logic of the selection is done in the Room component, here it check the value of currentRoom 
@@ -40,11 +41,11 @@ const ChatAppHomePage: React.FC = () => {
     return false;
   };
 
-  useEffect(() => {
-    authenticateUser(token).catch(()=> navigate("/register"));
+  /*useEffect(() => {
+    setIsAuthenticating(true);
+    authenticateUser(token).catch(()=> navigate("/register")).then(()=> setIsAuthenticating(false));
     if (username !== undefined) {
       setCurrentConnection(connectToRoom(username,currentRoom));
-      
       getAllMessagesFromARoom(token,currentRoom).then((messages: Message[]) => {
         if (messages.length > 0) {
           setMessages(messages)
@@ -88,7 +89,7 @@ const ChatAppHomePage: React.FC = () => {
     setRooms(roomElements);
     }
   
-  }, [connectedUsers]);
+  }, [connectedUsers]);*/
 
 
 
@@ -96,23 +97,27 @@ const ChatAppHomePage: React.FC = () => {
     <div className="App">
       <header className="chat-app-header">
         <h1>Chat App</h1>
+        {
+          isAuthenticating && <h3 style={{color: "red"}}>Connecting to the server, if you see this screen and not the login page means that the server due to inactivity could require from 2-5 minute to warm up, after that it will be possible to use the chat with no limitation</h3>
+        }
       </header>
       <div className="chat-container">
-        <div className="room-container">
+        <ScrollToBottom className="room-container">
           {
             currentRoom !== "Global" &&
               <Room roomName="Global" username={username} connection={connection} setCurrentConnection={setCurrentConnection} setCurrentRoom={setCurrentRoom} isSelected={false}/>
-          }
+          
+            }
           {
             currentRoom === "Global" &&
             <Room roomName="Global" username={username} connection={connection} setCurrentConnection={setCurrentConnection} setCurrentRoom={setCurrentRoom} isSelected={true}/>
           }
           {rooms}
-        </div>
+        </ScrollToBottom>
         <div className="interaction-container">
-            <div className="messages-container">
+          <ScrollToBottom className="messages-container">
                 {messages.map(message => <Message sender={message.SenderName} content={message.Payload} username={username}/>)}
-          </div>
+          </ScrollToBottom>
           
           <div className="user-input-container">
             <input className='message-input-bar' type="text" placeholder="Write your message" value={currentMessage}
@@ -127,8 +132,8 @@ const ChatAppHomePage: React.FC = () => {
                     SenderName: username
                   }
                   setMessages(messages => [...messages, message] )
-                  sendMessage(connection, currentMessage);
-                  saveMessage(token,message);
+                  //sendMessage(connection, currentMessage);
+                  //saveMessage(token,message);
                   setCurrentMessage('');
                 }
               }}
@@ -143,7 +148,7 @@ const ChatAppHomePage: React.FC = () => {
                 }
                 sendMessage(connection, currentMessage);
                 setMessages(messages => [...messages, message]);
-                saveMessage(token,message);
+                //saveMessage(token,message);
                 setCurrentMessage('');
               }}>&#9658;
             </button>
